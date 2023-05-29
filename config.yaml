@@ -1,9 +1,9 @@
 # arxivの学問領域の指定
-subject: 'cat:cs.*'
+subject: "cat:cs.* OR cat:eess.* cat:stat.*"
 
 # 検索キーワード
 keywords:
-        federated learning: 3
-
+  Federated Learning: 3
+  Federated: 3
 # 通知の閾値
-score_threshold: 0
+score_threshold: 3
