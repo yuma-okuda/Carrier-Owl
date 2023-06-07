@@ -65,7 +65,7 @@ def search_keyword(
             # abstract_trans = textwrap.wrap(abstract_trans, 40)  # 40行で改行
             # abstract_trans = '\n'.join(abstract_trans)
             result = Result(
-                    url=url, title=title,title_trans=title_trans abstract=abstract_trans,
+                    url=url, title=title,title_trans=title_trans, abstract=abstract_trans,
                     score=score, words=hit_keywords)
             results.append(result)
     
@@ -112,6 +112,10 @@ def notify(results: list, slack_id: str, line_token: str) -> None:
 
                f'\n abstract:'\
                f'\n \t {abstract}'\
+        
+        
+        
+        
                f'\n {star}'
 
         send2app(text, slack_id, line_token)
