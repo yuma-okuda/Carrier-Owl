@@ -111,11 +111,10 @@ def notify(results: list, slack_id: str, line_token: str) -> None:
                f'\n title_trans:    {title_trans}'\
                f'\n abstract:'\
                f'\n \t {abstract}'\
-        
-        
-        
-        
                f'\n {star}'
+        
+        
+        
 
         send2app(text, slack_id, line_token)
 
