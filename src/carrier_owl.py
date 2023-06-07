@@ -55,7 +55,7 @@ def search_keyword(
     
     for article in articles:
         url = article['arxiv_url']
-        title = article['title']
+        title = article['title'].replace('\n', ' ')
         abstract = article['summary']
         score, hit_keywords = calc_score(abstract, keywords)
         if (score != 0) and (score >= score_threshold):
