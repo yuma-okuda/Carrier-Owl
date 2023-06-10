@@ -5,5 +5,7 @@ subject: "cat:cs.* OR cat:eess.* cat:stat.*"
 keywords:
   Federated Learning: 3
   Federated: 3
+  Network: 2
+  Resorce: 2
 # 通知の閾値
 score_threshold: 3
