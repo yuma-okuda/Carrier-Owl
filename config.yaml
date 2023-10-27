@@ -8,6 +8,6 @@ keywords:
   Split Learning: 3
   SplitNN: 3
   Network: 1
-  Heterogeneous: 2
+  Heterogeneous: 1
 # 通知の閾値
 score_threshold: 3
