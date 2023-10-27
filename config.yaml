@@ -7,7 +7,7 @@ keywords:
   Federated: 3
   Split Learning: 3
   SplitNN: 3
-  Network: 2
+  Network: 1
   Heterogeneous: 2
 # 通知の閾値
 score_threshold: 3
