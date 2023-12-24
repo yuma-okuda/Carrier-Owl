@@ -140,6 +140,7 @@ def get_translated_text(from_lang: str, to_lang: str, from_text: str, driver) ->
         result = request.json()['translations'][0]['text']
     except:
         result = from_text
+    print(result)
     return result
 
 def get_text_from_driver(driver) -> str:
