@@ -42,39 +42,40 @@ def calc_score(abst: str, keywords: dict) -> (float, list):
 
 
 def search_keyword(
-        articles: list, keywords: dict, score_threshold: float
-        ) -> list:
+        articles: list, keywords: dict, score_threshold: float, args
+) -> list:
     results = []
-    
+
     # ヘッドレスモードでブラウザを起動
     options = Options()
     options.add_argument('--headless')
 
     # ブラウザーを起動
-    driver = webdriver.Firefox(executable_path=GeckoDriverManager().install(), options=options)
-    
+    driver = webdriver.Firefox(
+        executable_path=GeckoDriverManager().install(), options=options)
     for article in articles:
         url = article['arxiv_url']
         title = article['title'].replace('\n', ' ')
         abstract = article['summary']
         score, hit_keywords = calc_score(abstract, keywords)
         if (score != 0) and (score >= score_threshold):
-            title_trans = get_translated_text('ja', 'en', title, driver)
+            title_trans = get_translated_text('ja', 'en', title, args, driver)
             abstract = abstract.replace('\n', '')
-            abstract_trans = get_translated_text('ja', 'en', abstract, driver)
+            abstract_trans = get_translated_text(
+                'ja', 'en', abstract, args, driver)
             # abstract_trans = textwrap.wrap(abstract_trans, 40)  # 40行で改行
             # abstract_trans = '\n'.join(abstract_trans)
             result = Result(
-                    url=url, title=title,title_trans=title_trans, abstract=abstract_trans,
-                    score=score, words=hit_keywords)
+                url=url, title=title, title_trans=title_trans, abstract=abstract_trans,
+                score=score, words=hit_keywords)
             results.append(result)
-    
+
     # ブラウザ停止
     driver.quit()
     return results
 
 
-def send2app(text: str, slack_id: str, line_token: str) -> None:
+def send2app(text, slack_id: str, line_token: str) -> None:
     # slack
     if slack_id is not None:
         slack = slackweb.Slack(url=slack_id)
@@ -112,40 +113,41 @@ def notify(results: list, slack_id: str, line_token: str) -> None:
                f'\n abstract:'\
                f'\n \t {abstract}'\
                f'\n {star}'
-        
-        
-        
 
         send2app(text, slack_id, line_token)
 
 
-def get_translated_text(from_lang: str, to_lang: str, from_text: str, driver) -> str:
+def get_translated_text(from_lang: str, to_lang: str, from_text: str, args, driver) -> str:
     '''
-    https://qiita.com/fujino-fpu/items/e94d4ff9e7a5784b2987
+    https://qiita.com/Negelon/items/ad0e47d15372e0d82ca9
     '''
-    DEEPL_API_KEY =  os.getenv("DEEPL_API_KEY") or args.deepl_api_key
+    DEEPL_API_KEY = os.getenv("DEEPL_API_KEY") or args.deepl_api_key
 
     params = {
-            'auth_key' : DEEPL_API_KEY,
-            'text' : from_text,
-            'source_lang' : from_lang, # 翻訳対象の言語
-            "target_lang": to_lang  # 翻訳後の言語
-        }
-
-    request = requests.post("https://api-free.deepl.com/v2/translate", data=params) # URIは有償版, 無償版で異なるため要注意
+        'auth_key': DEEPL_API_KEY,
+        'text': from_text,
+        'source_lang': to_lang,  # 翻訳対象の言語
+        "target_lang": from_lang  # 翻訳後の言語
+    }
+    # URIは有償版, 無償版で異なるため要注意
+    request = requests.post(
+        "https://api-free.deepl.com/v2/translate", data=params)
     try:
         result = request.json()['translations'][0]['text']
     except:
         result = from_text
     return result
 
+
 def get_text_from_driver(driver) -> str:
     try:
-        elem = driver.find_element_by_class_name('lmt__translations_as_text__text_btn')
+        elem = driver.find_element_by_class_name(
+            'lmt__translations_as_text__text_btn')
     except NoSuchElementException as e:
         return None
     text = elem.get_attribute('innerHTML')
     return text
+
 
 def get_text_from_page_source(html: str) -> str:
     soup = BeautifulSoup(html, features='lxml')
@@ -168,6 +170,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--slack_id', default=None)
     parser.add_argument('--line_token', default=None)
+    parser.add_argument('--deepl_api_key', default=None)
     args = parser.parse_args()
 
     config = get_config()
@@ -185,11 +188,16 @@ def main():
                            max_results=1000,
                            sort_by='submittedDate',
                            iterative=False)
-    results = search_keyword(articles, keywords, score_threshold)
+
+    results = search_keyword(articles, keywords, score_threshold, args)
 
     slack_id = os.getenv("SLACK_ID") or args.slack_id
     line_token = os.getenv("LINE_TOKEN") or args.line_token
     notify(results, slack_id, line_token)
+    try:
+        send2app(text=articles[0], slack_id=slack_id, line_token=line_token)
+    except:
+        pass
 
 
 if __name__ == "__main__":
