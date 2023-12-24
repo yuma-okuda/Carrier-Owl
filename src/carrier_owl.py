@@ -125,9 +125,6 @@ def get_translated_text(from_lang: str, to_lang: str, from_text: str, driver) ->
     '''
     DEEPL_API_KEY =  os.getenv("DEEPL_API_KEY") or args.deepl_api_key
 
-    sleep_time = 1
-    from_text = 'phone'
-
     params = {
             'auth_key' : DEEPL_API_KEY,
             'text' : from_text,
