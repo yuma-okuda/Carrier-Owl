@@ -123,31 +123,23 @@ def get_translated_text(from_lang: str, to_lang: str, from_text: str, driver) ->
     '''
     https://qiita.com/fujino-fpu/items/e94d4ff9e7a5784b2987
     '''
+    DEEPL_API_KEY =  os.getenv("DEEPL_API_KEY") or args.deepl_api_key
 
     sleep_time = 1
 
-    # urlencode
-    from_text = urllib.parse.quote(from_text)
+    params = {
+            'auth_key' : DEEPL_API_KEY,
+            'text' : from_text,
+            'source_lang' : from_lang, # 翻訳対象の言語
+            "target_lang": to_lang  # 翻訳後の言語
+        }
 
-    # url作成
-    url = 'https://www.deepl.com/translator#' \
-        + from_lang + '/' + to_lang + '/' + from_text
-
-    driver.get(url)
-    driver.implicitly_wait(10)  # 見つからないときは、10秒まで待つ
-
-    for i in range(30):
-        # 指定時間待つ
-        time.sleep(sleep_time)
-        html = driver.page_source
-        # to_text = get_text_from_page_source(html)
-        to_text = get_text_from_driver(driver)
-
-        if to_text:
-            break
-    if to_text is None:
-        return urllib.parse.unquote(from_text)
-    return to_text
+    request = requests.post("https://api-free.deepl.com/v2/translate", data=params) # URIは有償版, 無償版で異なるため要注意
+    try:
+        result = request.json()['translations'][0]['text']
+    except:
+        result = from_text
+    return result
 
 def get_text_from_driver(driver) -> str:
     try:
