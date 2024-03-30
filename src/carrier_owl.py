@@ -122,6 +122,7 @@ def get_translated_text(from_lang: str, to_lang: str, from_text: str, args, driv
     https://qiita.com/Negelon/items/ad0e47d15372e0d82ca9
     '''
     DEEPL_API_KEY = os.getenv("DEEPL_API_KEY") or args.deepl_api_key
+    print(DEEPL_API_KEY)
 
     params = {
         'auth_key': DEEPL_API_KEY,
