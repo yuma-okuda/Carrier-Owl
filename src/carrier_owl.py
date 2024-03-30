@@ -125,7 +125,7 @@ def get_translated_text(from_lang: str, to_lang: str, from_text: str, args, driv
 
     params = {
         'auth_key': DEEPL_API_KEY,
-        'text': from_text,
+        'text': 'Your branch is up to date with a',
         'source_lang': to_lang,  # 翻訳対象の言語
         "target_lang": from_lang  # 翻訳後の言語
     }
