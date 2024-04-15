@@ -9,5 +9,6 @@ keywords:
   SplitNN: 3
   Network: 1
   Heterogeneous: 1
+  Migration: 1
 # 通知の閾値
 score_threshold: 3
