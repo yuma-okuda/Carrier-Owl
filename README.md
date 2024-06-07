@@ -54,7 +54,7 @@
     - LINEに通知する場合は[こちら](./docs/line_setup.md)
 
 
-4. **webhook urlの設定**
+4. **webhook url, DeepL Apiの設定**
     - step3で取得した `webhook url`(または `line token`) を設定します。
     - 手順
 
@@ -67,10 +67,14 @@
         c. `New repository secret` をクリック。
 
         d. Nameを `SLACK_ID`(または `LINE_TOKEN` ) と入力。Valueを **step2** で取得した`webhook url`(また `line token`)を貼り付けます。
+      
 
         <img src='./data/images/07.png' width='1000'>
         
         e. 最後に`Add secret`をクリックして登録完了です。
+
+        f. 同じく、`DEEPL_API_KEY`にdeeplから取得したAPIキーを入力する。
+
 
 5. **領域の設定**
 
